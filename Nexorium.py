@@ -1,5 +1,5 @@
-import json
 import os
+import json
 import time
 import random
 
@@ -27,7 +27,7 @@ from uuid import uuid4
 
 # ================= CONFIGURAÇÕES =================
 
-TOKEN = "8761044296:AAFVYBc1y2qwQLB-vfeUcc9nmSl5e4DgjQ0"
+TOKEN = os.getenv("TOKEN")
 SEU_ID = 1130170420
 ARQUIVO_DADOS = "bot_ajuda.json"
 
