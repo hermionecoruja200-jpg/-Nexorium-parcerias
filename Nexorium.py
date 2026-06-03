@@ -352,11 +352,20 @@ def teclado_menu(user_id):
             resize_keyboard=True
         )
 
+    if nivel == "editor":
+        return ReplyKeyboardMarkup(
+            [
+                ["🔒 Criar parceria pessoal"],
+                ["✏️ Editar parceria", "🗑 Apagar parceria"],
+                ["🔒 Minhas parcerias"],
+                ["🆔 Meu ID", "❓ Ajuda"]
+            ],
+            resize_keyboard=True
+        )
+
     botoes = []
 
-    if nivel in ["dona", "supremo"]:
-        botoes.append(["🌍 Criar parceria global"])
-
+    botoes.append(["🌍 Criar parceria global"])
     botoes.append(["🔒 Criar parceria pessoal"])
     botoes.append(["✏️ Editar parceria", "🗑 Apagar parceria"])
     botoes.append(["🌍 Parcerias globais", "🔒 Minhas parcerias"])
@@ -1103,6 +1112,20 @@ def ver_comandos(update, context):
     user_id = update.effective_user.id
     uid = str(user_id)
     nivel = nivel_usuario(user_id, dados)
+
+    if nivel == "editor":
+    texto = "📋 Comandos disponíveis\n\n"
+
+    pessoais = dados["pessoais"].get(uid, {})
+
+    if pessoais:
+        for nome in pessoais:
+            texto += f"`/parceria {nome}`\n"
+    else:
+        texto += "Nenhuma parceria pessoal."
+
+    update.message.reply_text(texto, parse_mode="Markdown")
+    return
 
     texto = "📋 Comandos disponíveis\n\n"
 
