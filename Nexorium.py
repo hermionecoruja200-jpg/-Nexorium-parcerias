@@ -261,13 +261,19 @@ def pode_usar_global_no_grupo(update, context, dados):
     chat = update.effective_chat
     user = update.effective_user
     user_id = user.id if user else None
+
     nivel = nivel_usuario(user_id, dados)
 
-    if chat.type == "private":
-        return bool(nivel)
-
-    if nivel:
+    # Apenas dona, supremo e comum podem usar globais
+    if nivel in ["dona", "supremo", "comum"]:
         return True
+
+    # Editor NÃO pode usar globais
+    if nivel == "editor":
+        return False
+
+    if chat.type == "private":
+        return False
 
     if usuario_admin_do_grupo(update, context):
         return True
