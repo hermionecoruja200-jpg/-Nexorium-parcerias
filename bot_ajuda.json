@@ -195,28 +195,6 @@
             "codigo_fixo": "lumos5119"
         }
     },
-    "pessoais": {
-        "1130170420": {},
-        "8672397104": {
-            "livros_📚": {
-                "nome": "livros_📚",
-                "tipo": "pessoal",
-                "criador_id": 8672397104,
-                "criador_nome": "✨ Aurelion",
-                "imagem": "AgACAgEAAxkBAAIC9Wn9EEP9YCofgB7oPqinxN8H5luEAAI_DGsb7i3pR8PcSvaM-U6jAQADAgADeQADOwQ",
-                "frase": "Livros 📚",
-                "botoes": [
-                    {
-                        "nome": "📚 Livros 0.1",
-                        "link": "https://t.me/+7VNXxzBJSdo5MzBh"
-                    },
-                    {
-                        "nome": "🚂 Plataforma 9¾",
-                        "link": "https://t.me/+7VNXxzBJSdo5MzBh"
-                    }
-                ]
-            }
-        },
         "6120540060": {
             "𝐀𝐥𝐭𝐚_parceiros": {
                 "nome": "𝐀𝐥𝐭𝐚_parceiros",
