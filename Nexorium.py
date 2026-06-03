@@ -208,7 +208,7 @@ def status_bonito(nivel):
 
 
 def pode_criar_global(user_id, dados):
-    return nivel_usuario(user_id, dados) in ["dona", "supremo", "editor"]
+    return nivel_usuario(user_id, dados) in ["dona", "supremo"]
 
 
 def pode_liberar_ids(user_id, dados):
@@ -348,7 +348,7 @@ def teclado_menu(user_id):
 
     botoes = []
 
-    if nivel in ["dona", "supremo", "editor"]:
+    if nivel in ["dona", "supremo"]:
         botoes.append(["🌍 Criar parceria global"])
 
     botoes.append(["🔒 Criar parceria pessoal"])
@@ -550,7 +550,8 @@ def ajuda(update, context):
 
     update.message.reply_text(
         "📚 Nexorium — Ajuda\n\n"
-        "🌍 Global: dona, supremo ou editor podem criar/editar.\n"
+        "🌍 Global: apenas dona e supremo podem criar/editar.\n"
+        "🔒 Pessoal: dona, supremo e editor podem criar/editar.\n"
         "👤 Comum: só dispara parceria global no grupo.\n"
         "👤 Admin anônimo: só dispara parceria global no grupo.\n\n"
         "Formato dos botões:\n"
@@ -927,6 +928,7 @@ def processar_etapa_botoes(update, context, dados, uid, etapa, texto):
         lista["codigo_fixo"] = gerar_codigo_fixo(dados)
         dados["globais"][etapa["nome"]] = lista
     else:
+        lista["codigo_fixo"] = gerar_codigo_fixo(dados)
         dados["pessoais"].setdefault(uid, {})
         dados["pessoais"][uid][etapa["nome"]] = lista
 
@@ -1045,6 +1047,13 @@ def enviar_parceria(update, context, lista, mostrar_info=False):
 def listar_globais(update, context):
     dados = carregar_dados()
     user_id = update.effective_user.id
+    nivel = nivel_usuario(user_id, dados)
+
+    if nivel == "editor":
+        update.message.reply_text(
+            "❌ Editores de parcerias não possuem acesso às parcerias globais."
+        )
+        return
 
     if nivel_usuario(user_id, dados) == "comum":
         update.message.reply_text("Seu acesso comum só permite usar as parcerias globais no grupo.")
@@ -1112,6 +1121,15 @@ def ver_comandos(update, context):
 
 def ver_codigos_fixos(update, context):
     dados = carregar_dados()
+    nivel = nivel_usuario(update.effective_user.id, dados)
+
+    if nivel == "editor":
+        update.message.reply_text(
+            "❌ Editores de parcerias não possuem acesso aos códigos globais."
+        )
+        return
+
+    dados = carregar_dados()
     bot_username = context.bot.username or "Nexoriumbot"
 
     texto = "🔑 Códigos fixos das parcerias globais\n\n"
@@ -1154,7 +1172,8 @@ def listas_completas(update, context):
 
     texto = "📚 Listas completas do bot\n\n"
 
-    texto += "🌍 GLOBAIS\n"
+    if nivel in ["dona", "supremo"]:
+        texto += "🌍 GLOBAIS\n"
     if dados["globais"]:
         for nome, lista in dados["globais"].items():
             texto += (
@@ -1187,17 +1206,7 @@ def listas_completas(update, context):
 
 # ================= EDITAR PARCERIA =================
 
-def localizar_lista(dados, uid, nome, user_id):
-    if nome in dados["globais"]:
-        if pode_criar_global(user_id, dados):
-            return "global", dados["globais"][nome]
-        return None, None
 
-    pessoais = dados["pessoais"].get(uid, {})
-    if nome in pessoais and nivel_usuario(user_id, dados) != "comum":
-        return "pessoal", pessoais[nome]
-
-    return None, None
 
 
 def iniciar_editar(update, context):
