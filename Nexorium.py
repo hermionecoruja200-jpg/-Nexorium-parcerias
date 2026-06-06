@@ -694,7 +694,7 @@ def listar_ids(update, context):
     categorias = [
         ("👑 DONAS", "donas", "dona"),
         ("💎 SUPREMOS", "supremos", "supremo"),
-        ("⭐ EDITORES GLOBAIS", "editores", "editor"),
+        ("⭐ EDITORES", "editores", "editor"),
         ("👤 COMUNS", "comuns", "comum")
     ]
 
