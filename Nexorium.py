@@ -1113,7 +1113,7 @@ def ver_comandos(update, context):
     uid = str(user_id)
     nivel = nivel_usuario(user_id, dados)
 
-    if nivel == "editor":
+if nivel == "editor":
     texto = "📋 Comandos disponíveis\n\n"
 
     pessoais = dados["pessoais"].get(uid, {})
