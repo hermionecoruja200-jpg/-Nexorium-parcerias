@@ -1113,14 +1113,14 @@ def ver_comandos(update, context):
     uid = str(user_id)
     nivel = nivel_usuario(user_id, dados)
 
-if nivel == "editor":
-    texto = "📋 Comandos disponíveis\n\n"
+    if nivel == "editor":
+        texto = "📋 Comandos disponíveis\n\n"
 
-    pessoais = dados["pessoais"].get(uid, {})
+        pessoais = dados["pessoais"].get(uid, {})
 
-    if pessoais:
-        for nome in pessoais:
-            texto += f"`/parceria {nome}`\n"
+        if pessoais:
+            for nome in pessoais:
+                texto += f"`/parceria {nome}`\n"
     else:
         texto += "Nenhuma parceria pessoal."
 
