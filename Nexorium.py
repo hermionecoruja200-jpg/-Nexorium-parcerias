@@ -202,7 +202,7 @@ def status_bonito(nivel):
     return {
         "dona": "dona",
         "supremo": "supremo",
-        "editor": "editor global",
+        "editor": "editor",
         "comum": "comum"
     }.get(nivel, nivel or "sem nível")
 
