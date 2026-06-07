@@ -391,7 +391,8 @@ def teclado_menu(user_id):
     botoes.append(["🔒 Criar parceria pessoal"])
     botoes.append(["✏️ Editar parceria", "🗑 Apagar parceria"])
     botoes.append(["🌍 Parcerias globais", "🔒 Minhas parcerias"])
-    botoes.append(["📋 Ver comandos", "🔑 Códigos fixos"])
+    botoes.append(["📋 Ver comandos global", "🔑 Códigos fixos"])
+    botoes.append(["📋 Ver comandos pessoal", "🔑 Inline Minhas Listas"])
     botoes.append(["📚 Listas completas", "⏱ Tempo por parceria"])
     botoes.append(["🆔 Meu ID", "❓ Ajuda"])
 
@@ -1929,6 +1930,15 @@ def tratar_menu(update, context):
             "`/liberar ID supremo`",
             parse_mode="Markdown"
         )
+
+    elif "inline minhas listas" in t:
+    update.message.reply_text(
+        "🔒 Suas listas pessoais podem ser usadas em qualquer grupo.\n\n"
+        "Digite:\n\n"
+        "@NexoriumBot minhas\n\n"
+        "O Telegram mostrará apenas as suas parcerias pessoais."
+    )
+    
     elif "apagar id" in t:
         update.message.reply_text("Use assim:\n`/apagarid ID`", parse_mode="Markdown")
 
