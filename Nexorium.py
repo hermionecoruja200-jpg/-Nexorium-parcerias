@@ -85,12 +85,22 @@ def gerar_codigo_fixo(dados):
     prefixos = ["nx", "lumos", "coruja", "livro", "magia", "nex"]
     existentes = set()
 
+    # globais
     for lista in dados.get("globais", {}).values():
-        if lista.get("codigo_fixo"):
-            existentes.add(lista["codigo_fixo"])
+        codigo = lista.get("codigo_fixo")
+        if codigo:
+            existentes.add(codigo)
+
+    # pessoais
+    for usuario in dados.get("pessoais", {}).values():
+        for lista in usuario.values():
+            codigo = lista.get("codigo_fixo")
+            if codigo:
+                existentes.add(codigo)
 
     while True:
         codigo = random.choice(prefixos) + str(random.randint(1000, 9999))
+
         if codigo not in existentes:
             return codigo
 
@@ -157,6 +167,18 @@ def buscar_global_por_codigo(dados, codigo):
 
     return None, None
 
+def buscar_pessoal_por_codigo(dados, user_id, codigo):
+    codigo = codigo.strip().lower().replace("@", "")
+
+    uid = str(user_id)
+
+    pessoais = dados.get("pessoais", {}).get(uid, {})
+
+    for nome, lista in pessoais.items():
+        if str(lista.get("codigo_fixo", "")).lower() == codigo:
+            return nome, lista
+
+    return None, None
 
 def tempo_usuario_parceria(dados, user_id, nome_parceria):
     uid = str(user_id) if user_id else "anonimo"
@@ -1101,9 +1123,18 @@ def listar_pessoais(update, context):
 
     update.message.reply_text("🔒 Suas parcerias pessoais:")
 
-    for lista in pessoais.values():
-        enviar_parceria(update, context, lista, mostrar_info=True)
+    bot_username = context.bot.username or "Nexoriumbot"
 
+    for lista in pessoais.values():
+
+        texto = (
+            f"🔒 {lista['nome']}\n"
+            f"🔑 @{bot_username} {lista['codigo_fixo']}"
+        )
+        
+        update.message.reply_text(texto)
+
+        enviar_parceria(update, context, lista, mostrar_info=True)
 
 # ================= VER COMANDOS / CÓDIGOS / LISTAS =================
 
@@ -1748,8 +1779,26 @@ def codigo_fixo_texto(update, context):
     codigo = partes[1].strip().lower()
     nome, lista = buscar_global_por_codigo(dados, codigo)
 
-    if not lista:
+    if lista:
+        if not pode_usar_global_no_grupo(update, context, dados):
+            return
+
+        if update.effective_chat.type == "private":
+            enviar_parceria(update, context, lista)
+            return
+
+        disparar_lista_global(update, context, dados, nome, lista)
         return
+
+    user_id = update.effective_user.id
+    nome, lista = buscar_pessoal_por_codigo(
+        dados,
+        user_id,
+        codigo
+    )
+
+    if lista:
+        enviar_parceria(update, context, lista)
 
     if not pode_usar_global_no_grupo(update, context, dados):
         return
