@@ -2024,7 +2024,82 @@ def inline_query(update, context):
     query = (update.inline_query.query or "").strip().lower()
     dados = carregar_dados()
 
-    resultados = montar_resultados_inline(query, dados, usar_foto=True)
+    # ===== LISTAS PESSOAIS =====
+    if query == "minhas":
+        uid = str(update.inline_query.from_user.id)
+
+        resultados = []
+
+        pessoais = dados.get("pessoais", {}).get(uid, {})
+
+        for nome, lista in pessoais.items():
+
+            frase = lista.get("frase") or "📚✨ Parcerias ✨📚"
+
+            teclado = []
+
+            for botao in lista.get("botoes", []):
+                nome_botao = botao.get("nome", "").strip()
+                link = botao.get("link", "").strip()
+
+                if nome_botao and link_valido(link):
+                    teclado.append([
+                        InlineKeyboardButton(
+                            nome_botao,
+                            url=link
+                        )
+                    ])
+
+            reply_markup = InlineKeyboardMarkup(teclado) if teclado else None
+
+            if lista.get("imagem"):
+
+                resultados.append(
+                    InlineQueryResultCachedPhoto(
+                        id=str(uuid4()),
+                        photo_file_id=lista["imagem"],
+                        caption=frase,
+                        reply_markup=reply_markup
+                    )
+                )
+
+            else:
+
+                resultados.append(
+                    InlineQueryResultArticle(
+                        id=str(uuid4()),
+                        title=f"🔒 {nome}",
+                        description="Parceria pessoal",
+                        input_message_content=InputTextMessageContent(frase),
+                        reply_markup=reply_markup
+                    )
+                )
+
+        if not resultados:
+            resultados.append(
+                InlineQueryResultArticle(
+                    id=str(uuid4()),
+                    title="🔒 Nenhuma parceria pessoal",
+                    description="Você ainda não possui listas pessoais.",
+                    input_message_content=InputTextMessageContent(
+                        "Você ainda não possui listas pessoais."
+                    )
+                )
+            )
+
+        update.inline_query.answer(
+            resultados,
+            cache_time=1,
+            is_personal=True
+        )
+        return
+
+    # ===== GLOBAIS =====
+    resultados = montar_resultados_inline(
+        query,
+        dados,
+        usar_foto=True
+    )
 
     try:
         update.inline_query.answer(
@@ -2034,20 +2109,20 @@ def inline_query(update, context):
         )
 
     except BadRequest as erro:
-        print("Inline com foto falhou, enviando sem foto:", erro)
 
-        resultados_sem_foto = montar_resultados_inline(
+        print("Inline com foto falhou:", erro)
+
+        resultados = montar_resultados_inline(
             query,
             dados,
             usar_foto=False
         )
 
         update.inline_query.answer(
-            resultados_sem_foto,
+            resultados,
             cache_time=1,
             is_personal=True
         )
-
 
 # ================= ERROS / MAIN =================
 
