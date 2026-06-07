@@ -1932,12 +1932,12 @@ def tratar_menu(update, context):
         )
 
     elif "inline minhas listas" in t:
-    update.message.reply_text(
-        "🔒 Suas listas pessoais podem ser usadas em qualquer grupo.\n\n"
-        "Digite:\n\n"
-        "@NexoriumBot minhas\n\n"
-        "O Telegram mostrará apenas as suas parcerias pessoais."
-    )
+        update.message.reply_text(
+            "🔒 Suas listas pessoais podem ser usadas em qualquer grupo.\n\n"
+            "Digite:\n\n"
+            "@NexoriumBot minhas\n\n"
+            "O Telegram mostrará apenas as suas parcerias pessoais."
+        )
     
     elif "apagar id" in t:
         update.message.reply_text("Use assim:\n`/apagarid ID`", parse_mode="Markdown")
