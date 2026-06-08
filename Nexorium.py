@@ -1049,8 +1049,14 @@ def enviar_parceria_context(context, chat_id, lista, mostrar_info=False, message
             f"\n👤 Criador: {lista.get('criador_nome')}"
             f"\n🔢 Botões: {len(lista.get('botoes', []))}"
         )
-        if lista.get("codigo_fixo"):
+        
+        if lista.get("tipo") == "global" and lista.get("codigo_fixo"):
             frase += f"\n🔑 Código: {lista.get('codigo_fixo')}"
+
+        elif lista.get("tipo") == "pessoal":
+            frase += (
+                f"\n🔒 Inline: @{context.bot.username} minhas"
+            )
 
     kwargs = {
         "chat_id": chat_id,
