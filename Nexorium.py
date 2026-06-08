@@ -1136,7 +1136,6 @@ def listar_pessoais(update, context):
 
         texto = (
             f"🔒 {lista['nome']}\n"
-            f"🔑 @{bot_username} {lista['codigo_fixo']}"
         )
         
         update.message.reply_text(texto)
